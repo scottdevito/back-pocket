@@ -15,7 +15,14 @@ function App() {
           />
           <h3 style={{ margin: "0 0 0 15px" }}>Back Pocket</h3>
         </LogoWrapper>
-        <LeftSidebarContentSection></LeftSidebarContentSection>
+        <LeftSidebarContentSection>
+          <AddWalletPromptWrapper>
+            <AddWalletCopy>
+              Get started by adding or creating a wallet.
+            </AddWalletCopy>
+            <AddWalletButton>Add</AddWalletButton>
+          </AddWalletPromptWrapper>
+        </LeftSidebarContentSection>
       </LeftSidebar>
       <Header>Log out</Header>
     </AppWrapper>
@@ -71,5 +78,37 @@ const LeftSidebar = styled.div`
 `;
 
 const LeftSidebarContentSection = styled.section`
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  flex-grow: 5;
+`;
+
+const AddWalletPromptWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+`;
+
+const AddWalletCopy = styled.p`
+  text-align: center;
+`;
+
+const AddWalletButton = styled.button`
+  background-color: #ff7777;
+  color: #fff;
+  border-radius: 5px;
+  padding: 15px 65px;
+  border: 0;
+  font-size: 16px;
+  font-weight: 600;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
