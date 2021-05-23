@@ -28,12 +28,19 @@ function App() {
           />
           <h3 style={{ margin: "0 0 0 15px" }}>Back Pocket</h3>
         </LogoWrapper>
-        <LeftSidebarContentSection>
+        <LeftSidebarContentSection></LeftSidebarContentSection>
+      </LeftSidebar>
+      <RightSection>
+        <Header>Log out</Header>
+        <RightContentSection>
           {walletData?.length > 0 ? (
             <AddWalletPromptWrapper>
-              <AddWalletCopy>
-                Get started by adding or creating a wallet.
-              </AddWalletCopy>
+              <AddAddressHeader>Add an address to begin</AddAddressHeader>
+              <AddAddressCopy>
+                Add an address and you’ll be able to see the balance,
+                transactions, and other details.
+              </AddAddressCopy>
+              <AddressInput></AddressInput>
               <AddWalletButton>Add</AddWalletButton>
             </AddWalletPromptWrapper>
           ) : (
@@ -41,11 +48,7 @@ function App() {
               renderWallet(wallet);
             })
           )}
-        </LeftSidebarContentSection>
-      </LeftSidebar>
-      <RightSection>
-        <Header>Log out</Header>
-        <RightContentSection>content section</RightContentSection>
+        </RightContentSection>
       </RightSection>
     </AppWrapper>
   );
@@ -67,8 +70,6 @@ const LogoWrapper = styled.div`
   align-items: center;
   height: 70px;
   padding: 15px;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
 
   &:hover {
@@ -88,8 +89,6 @@ const Header = styled.header`
   padding: 0 15px;
   max-width: 100%;
   width: 100%;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
 `;
 
@@ -125,8 +124,29 @@ const AddWalletPromptWrapper = styled.div`
   width: 90%;
 `;
 
-const AddWalletCopy = styled.p`
+const AddAddressHeader = styled.h1`
+  font-weight: 700;
+  font-size: 30px;
+  margin: 10px 0;
+`;
+
+const AddAddressCopy = styled.p`
   text-align: center;
+  max-width: 355px;
+  margin: 0 0 20px 0;
+`;
+
+const AddressInput = styled.input`
+  width: 300px;
+  height: 40px;
+  border-radius: 5px;
+  margin: 0 0 20px 0;
+  box-sizing: border-box;
+  font-size: 18px;
+
+  &:focus {
+    border: 3px solid black;
+  }
 `;
 
 const AddWalletButton = styled.button`
