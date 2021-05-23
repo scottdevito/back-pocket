@@ -4,17 +4,26 @@ import backPocketLogo from "./assets/icons/backPocketLogo.svg";
 import "./App.css";
 import { leftSidebarWidth } from "./utils/consts";
 
-type Wallet = {};
+type Address = {
+  name: string;
+};
 
 function App() {
-  const [walletData, setWalletData] = React.useState<Array<Wallet> | []>([
-    {},
-    {},
-  ]);
+  const [addressesData, setAddressesData] = React.useState<Array<Address> | []>(
+    []
+  );
+  const [addressToBeAdded, setAddressToBeAdded] =
+    React.useState<Address["name"]>("");
 
-  const renderWallet = (walletData: Wallet) => {
+  const renderAddress = (addressData: Address) => {
     return;
-    // return <Wallet walletData={walletData} />
+    // return <Address addressData={addressData} />
+  };
+
+  const handleAddressInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setAddressToBeAdded(event?.currentTarget?.value);
   };
 
   return (
@@ -28,25 +37,31 @@ function App() {
           />
           <h3 style={{ margin: "0 0 0 15px" }}>Back Pocket</h3>
         </LogoWrapper>
-        <LeftSidebarContentSection></LeftSidebarContentSection>
+        <LeftSidebarContentSection>
+          {addressesData.map((address: Address) => {
+            renderAddress(address);
+          })}
+        </LeftSidebarContentSection>
       </LeftSidebar>
       <RightSection>
-        <Header>Log out</Header>
+        <Header></Header>
         <RightContentSection>
-          {walletData?.length > 0 ? (
+          {addressesData?.length > 0 ? (
+            <span />
+          ) : (
             <AddWalletPromptWrapper>
-              <AddAddressHeader>Add an address to begin</AddAddressHeader>
+              <AddAddressHeader>Enter an address to begin</AddAddressHeader>
               <AddAddressCopy>
                 Add an address and you’ll be able to see the balance,
                 transactions, and other details.
               </AddAddressCopy>
-              <AddressInput></AddressInput>
+              <AddressInput
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  handleAddressInputChange(event);
+                }}
+              />
               <AddWalletButton>Add</AddWalletButton>
             </AddWalletPromptWrapper>
-          ) : (
-            walletData.map((wallet: Wallet) => {
-              renderWallet(wallet);
-            })
           )}
         </RightContentSection>
       </RightSection>
