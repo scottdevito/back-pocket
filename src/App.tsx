@@ -3,27 +3,28 @@ import styled from "styled-components";
 import backPocketLogo from "./assets/icons/backPocketLogo.svg";
 import "./App.css";
 import { leftSidebarWidth } from "./utils/consts";
-
-type Address = {
-  name: string;
-};
+import Web3 from "web3";
+import AddAddressPage from "./pages/add-address-page";
+import AddressDetailsPage from "./pages/address-details-page";
+import { Address, AddressesData } from "./types";
 
 function App() {
-  const [addressesData, setAddressesData] = React.useState<Array<Address> | []>(
-    []
+  const { REACT_APP_INFURA_PROJECT_URL } = process.env;
+
+  const web3 = new Web3(
+    new Web3.providers.HttpProvider(`${REACT_APP_INFURA_PROJECT_URL}`)
   );
-  const [addressToBeAdded, setAddressToBeAdded] =
-    React.useState<Address["name"]>("");
 
-  const renderAddress = (addressData: Address) => {
-    return;
+  const [addressesData, setAddressesData] = React.useState<AddressesData>([]);
+
+  const renderLeftSidebarAddress = (addressData: Address) => {
+    return (
+      <div style={{ maxWidth: "100%", wordBreak: "break-all" }}>
+        <span style={{ fontWeight: 600 }}>{addressData.name}</span>
+        <div onClick={() => setAddressesData([])}>(X) Delete Address</div>
+      </div>
+    );
     // return <Address addressData={addressData} />
-  };
-
-  const handleAddressInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setAddressToBeAdded(event?.currentTarget?.value);
   };
 
   return (
@@ -39,7 +40,7 @@ function App() {
         </LogoWrapper>
         <LeftSidebarContentSection>
           {addressesData.map((address: Address) => {
-            renderAddress(address);
+            return renderLeftSidebarAddress(address);
           })}
         </LeftSidebarContentSection>
       </LeftSidebar>
@@ -47,21 +48,9 @@ function App() {
         <Header></Header>
         <RightContentSection>
           {addressesData?.length > 0 ? (
-            <span />
+            <AddressDetailsPage addressesData={addressesData} />
           ) : (
-            <AddWalletPromptWrapper>
-              <AddAddressHeader>Enter an address to begin</AddAddressHeader>
-              <AddAddressCopy>
-                Add an address and you’ll be able to see the balance,
-                transactions, and other details.
-              </AddAddressCopy>
-              <AddressInput
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  handleAddressInputChange(event);
-                }}
-              />
-              <AddWalletButton>Add</AddWalletButton>
-            </AddWalletPromptWrapper>
+            <AddAddressPage web3={web3} setAddressesData={setAddressesData} />
           )}
         </RightContentSection>
       </RightSection>
@@ -129,53 +118,8 @@ const LeftSidebarContentSection = styled.section`
   width: 100%;
   height: 100%;
   flex-grow: 5;
-`;
-
-const AddWalletPromptWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 90%;
-`;
-
-const AddAddressHeader = styled.h1`
-  font-weight: 700;
-  font-size: 30px;
-  margin: 10px 0;
-`;
-
-const AddAddressCopy = styled.p`
-  text-align: center;
-  max-width: 355px;
-  margin: 0 0 20px 0;
-`;
-
-const AddressInput = styled.input`
-  width: 300px;
-  height: 40px;
-  border-radius: 5px;
-  margin: 0 0 20px 0;
   box-sizing: border-box;
-  font-size: 18px;
-
-  &:focus {
-    border: 3px solid black;
-  }
-`;
-
-const AddWalletButton = styled.button`
-  background-color: #ff7777;
-  color: #fff;
-  border-radius: 5px;
-  padding: 15px 65px;
-  border: 0;
-  font-size: 16px;
-  font-weight: 600;
-
-  &:hover {
-    cursor: pointer;
-  }
+  padding: 15px;
 `;
 
 const RightSection = styled.section`
