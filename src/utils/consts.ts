@@ -1,1 +1,1 @@
-export const leftSidebarWidth = `240px`;
+export const leftSidebarWidth = `340px`;

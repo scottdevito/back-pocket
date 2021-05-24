@@ -1,12 +1,13 @@
 import * as React from "react";
 import styled from "styled-components";
-import backPocketLogo from "./assets/icons/backPocketLogo.svg";
-import "./App.css";
-import { leftSidebarWidth } from "./utils/consts";
+import backPocketLogo from "../../assets/icons/backPocketLogo.svg";
+import "../../App.css";
+import { leftSidebarWidth } from "../../utils/consts";
 import Web3 from "web3";
-import AddAddressPage from "./pages/add-address-page";
-import AddressDetailsPage from "./pages/address-details-page";
-import { Address, AddressesData } from "./types";
+import AddAddressPage from "../add-address-page";
+import AddressDetailsPage from "../address-details-page";
+import { Address, AddressesData } from "../../types";
+import LeftSidebarAccount from "./left-sidebar-account";
 
 function App() {
   const { REACT_APP_INFURA_PROJECT_URL } = process.env;
@@ -19,12 +20,11 @@ function App() {
 
   const renderLeftSidebarAddress = (addressData: Address) => {
     return (
-      <div style={{ maxWidth: "100%", wordBreak: "break-all" }}>
-        <span style={{ fontWeight: 600 }}>{addressData.name}</span>
-        <div onClick={() => setAddressesData([])}>(X) Delete Address</div>
-      </div>
+      <LeftSidebarAccount
+        addressData={addressData}
+        setAddressesData={setAddressesData}
+      />
     );
-    // return <Address addressData={addressData} />
   };
 
   return (
@@ -48,7 +48,7 @@ function App() {
         <Header></Header>
         <RightContentSection>
           {addressesData?.length > 0 ? (
-            <AddressDetailsPage addressesData={addressesData} />
+            <AddressDetailsPage web3={web3} addressesData={addressesData} />
           ) : (
             <AddAddressPage web3={web3} setAddressesData={setAddressesData} />
           )}
