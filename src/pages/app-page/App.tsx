@@ -45,7 +45,7 @@ function App() {
         </LeftSidebarContentSection>
       </LeftSidebar>
       <RightSection>
-        <Header></Header>
+        <Header routeParam={""} />
         <RightContentSection>
           {addressesData?.length > 0 ? (
             <AddressDetailsPage web3={web3} addressesData={addressesData} />
@@ -81,7 +81,10 @@ const LogoWrapper = styled.div`
   }
 `;
 
-const Header = styled.header`
+type HeaderProps = {
+  routeParam: string;
+};
+const Header = styled.header<HeaderProps>`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -94,6 +97,15 @@ const Header = styled.header`
   max-width: 100%;
   width: 100%;
   box-sizing: border-box;
+  background: ${(props) => {
+    switch (props.routeParam) {
+      case "wallet-detail":
+        return "linear-gradient(269.92deg, #A6C0FE -75.68%, #F68084 130.99%)";
+
+      default:
+        return "transparent";
+    }
+  }};
 `;
 
 const LeftSidebar = styled.div`

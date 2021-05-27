@@ -9,7 +9,7 @@ export interface LeftSidebarAccountProps {
   setAddressesData: React.Dispatch<React.SetStateAction<AddressesData>>;
 }
 
-const LeftSidebarAccount: React.SFC<LeftSidebarAccountProps> = (props) => {
+const LeftSidebarAccount: React.FC<LeftSidebarAccountProps> = (props) => {
   return (
     <LeftSidebarAccountWrapper>
       <AccountContentWrapper>
