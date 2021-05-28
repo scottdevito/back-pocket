@@ -35,8 +35,11 @@ const AddAddressPage: React.FC<AddAddressPageProps> = (props) => {
             return [
               ...prevState,
               {
+                id: addressToBeAdded,
                 name: addressToBeAdded,
                 amountEth: props.web3.utils.fromWei(val, "ether"),
+                amountUsd: "",
+                dateAdded: new Date(),
               },
             ];
           });
