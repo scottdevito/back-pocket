@@ -1,12 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Address, AddressesData } from "../../types";
+import { Address } from "../../types";
 import leftSidebarAccount from "../../assets/images/leftSidebarAccount.svg";
 import removeAccountIcon from "../../assets/icons/removeAccountIcon.svg";
-
+import { Action } from "../../components/context/useWalletState";
 export interface LeftSidebarAccountProps {
   addressData: Address;
-  setAddressesData: React.Dispatch<React.SetStateAction<AddressesData>>;
+  dispatch: React.Dispatch<Action>;
 }
 
 const LeftSidebarAccount: React.FC<LeftSidebarAccountProps> = (props) => {
@@ -15,7 +15,12 @@ const LeftSidebarAccount: React.FC<LeftSidebarAccountProps> = (props) => {
       <AccountContentWrapper>
         <RemoveAccountIcon
           src={removeAccountIcon}
-          onClick={() => props.setAddressesData([])}
+          onClick={() =>
+            props.dispatch({
+              type: "remove_address",
+              payload: { address: props.addressData },
+            })
+          }
         />
         <AccountAddressHeader>{props.addressData.name}</AccountAddressHeader>
       </AccountContentWrapper>

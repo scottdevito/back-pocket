@@ -1,16 +1,16 @@
 import * as React from "react";
 import styled from "styled-components";
-import Web3 from "web3";
 import { Address } from "../types";
+import { Web3Context } from "../components/context/useWeb3";
+import { useWalletState } from "../components/context/useWalletState";
 
-export interface AddAddressPageProps {
-  web3: Web3;
-  setAddressesData: React.Dispatch<React.SetStateAction<Array<Address> | []>>;
-}
+export interface AddAddressPageProps {}
 
 const AddAddressPage: React.FC<AddAddressPageProps> = (props) => {
+  const { dispatch } = useWalletState();
+
   const [addressToBeAdded, setAddressToBeAdded] =
-    React.useState<Address["name"]>("");
+    React.useState<Address["id"]>("");
 
   const [addAddressError, setAddAddressError] = React.useState<string>("");
 
@@ -21,36 +21,21 @@ const AddAddressPage: React.FC<AddAddressPageProps> = (props) => {
   };
 
   // Validate address and attempt to add it
-  const handleAttemptAddAddress = () => {
-    // Clear previous errors
-    setAddAddressError("");
+  const { attemptAddAddress } = React.useContext(Web3Context);
 
-    if (addressToBeAdded.length > 0) {
-      // Check if the user-entered address is valid
-      if (props.web3.utils.isAddress(addressToBeAdded)) {
-        // Get address info
-        props.web3.eth.getBalance(addressToBeAdded).then((val) => {
-          // Persist address info in local state
-          props.setAddressesData((prevState) => {
-            return [
-              ...prevState,
-              {
-                id: addressToBeAdded,
-                name: addressToBeAdded,
-                amountEth: props.web3.utils.fromWei(val, "ether"),
-                amountUsd: "",
-                dateAdded: new Date(),
-              },
-            ];
-          });
-        });
-
-        return;
-      }
-    }
-
-    setAddAddressError("Please enter a valid address.");
-    return;
+  const handleAttemptAddAddress = async (addressToBeAdded: Address["id"]) => {
+    const addressInfoFromWeb3 = await attemptAddAddress(
+      addressToBeAdded,
+      setAddAddressError
+    );
+    // Persist address info to WalletState context
+    !!addressInfoFromWeb3 &&
+      dispatch({
+        type: "add_address",
+        payload: {
+          address: addressInfoFromWeb3,
+        },
+      });
   };
 
   return (
@@ -60,14 +45,24 @@ const AddAddressPage: React.FC<AddAddressPageProps> = (props) => {
         Add an address and you’ll be able to see the balance, transactions, and
         other details.
       </AddAddressCopy>
-      <AddressInput
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          handleAddressInputChange(event);
+      <AddAddressForm
+        onSubmit={(event: React.ChangeEvent<HTMLFormElement>) => {
+          event.preventDefault();
         }}
-      />
-      <AddWalletButton onClick={() => handleAttemptAddAddress()}>
-        Add
-      </AddWalletButton>
+      >
+        <AddressInput
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            event.preventDefault();
+            handleAddressInputChange(event);
+          }}
+        />
+        {/* TODO: Debounce AddWalletButton */}
+        <AddWalletButton
+          onClick={() => handleAttemptAddAddress(addressToBeAdded)}
+        >
+          Add
+        </AddWalletButton>
+      </AddAddressForm>
       <AddAddressErrorWrapper>
         {!!addAddressError ? addAddressError : null}
       </AddAddressErrorWrapper>
@@ -118,6 +113,7 @@ const AddWalletButton = styled.button`
   border: 0;
   font-size: 16px;
   font-weight: 600;
+  max-width: 160px;
 
   &:hover {
     cursor: pointer;
@@ -129,4 +125,11 @@ const AddAddressErrorWrapper = styled.div`
   font-weight: 700;
   min-height: 75px;
   margin-top: 40px;
+`;
+
+const AddAddressForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;

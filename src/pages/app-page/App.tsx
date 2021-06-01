@@ -3,26 +3,27 @@ import styled from "styled-components";
 import backPocketLogo from "../../assets/icons/backPocketLogo.svg";
 import "../../App.css";
 import { leftSidebarWidth } from "../../utils/consts";
-import Web3 from "web3";
 import AddAddressPage from "../add-address-page";
 import AddressDetailsPage from "../address-details-page";
 import { Address, AddressesData } from "../../types";
 import LeftSidebarAccount from "./left-sidebar-account";
+import {
+  useWalletState,
+  Action,
+} from "../../components/context/useWalletState";
 
-function App() {
-  const { REACT_APP_INFURA_PROJECT_URL } = process.env;
+const App: React.FC = (props): React.ReactElement => {
+  const { state, dispatch } = useWalletState();
 
-  const web3 = new Web3(
-    new Web3.providers.HttpProvider(`${REACT_APP_INFURA_PROJECT_URL}`)
-  );
-
-  const [addressesData, setAddressesData] = React.useState<AddressesData>([]);
-
-  const renderLeftSidebarAddress = (addressData: Address) => {
+  const renderLeftSidebarAddress = (
+    addressData: Address,
+    dispatch: React.Dispatch<Action>
+  ) => {
     return (
       <LeftSidebarAccount
         addressData={addressData}
-        setAddressesData={setAddressesData}
+        dispatch={dispatch}
+        key={addressData.id}
       />
     );
   };
@@ -39,24 +40,24 @@ function App() {
           <h3 style={{ margin: "0 0 0 15px" }}>Back Pocket</h3>
         </LogoWrapper>
         <LeftSidebarContentSection>
-          {addressesData.map((address: Address) => {
-            return renderLeftSidebarAddress(address);
+          {state.addresses.map((address: Address) => {
+            return renderLeftSidebarAddress(address, dispatch);
           })}
         </LeftSidebarContentSection>
       </LeftSidebar>
       <RightSection>
         <Header routeParam={""} />
         <RightContentSection>
-          {addressesData?.length > 0 ? (
-            <AddressDetailsPage web3={web3} addressesData={addressesData} />
+          {state.addresses?.length > 0 ? (
+            <AddressDetailsPage />
           ) : (
-            <AddAddressPage web3={web3} setAddressesData={setAddressesData} />
+            <AddAddressPage />
           )}
         </RightContentSection>
       </RightSection>
     </AppWrapper>
   );
-}
+};
 
 export default App;
 
