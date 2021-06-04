@@ -3,16 +3,19 @@ import styled from "styled-components";
 import { Address } from "../types";
 import { Web3Context } from "../components/context/useWeb3";
 import { useWalletState } from "../components/context/useWalletState";
+import { useHistory } from "react-router";
 
 export interface AddAddressPageProps {}
 
 const AddAddressPage: React.FC<AddAddressPageProps> = (props) => {
-  const { dispatch } = useWalletState();
+  const { state, dispatch } = useWalletState();
+  let history = useHistory();
 
   const [addressToBeAdded, setAddressToBeAdded] =
     React.useState<Address["id"]>("");
 
-  const [addAddressError, setAddAddressError] = React.useState<string>("");
+  const [addAddressError, setAddAddressError] =
+    React.useState<string | boolean>(false);
 
   const handleAddressInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -26,7 +29,8 @@ const AddAddressPage: React.FC<AddAddressPageProps> = (props) => {
   const handleAttemptAddAddress = async (addressToBeAdded: Address["id"]) => {
     const addressInfoFromWeb3 = await attemptAddAddress(
       addressToBeAdded,
-      setAddAddressError
+      setAddAddressError,
+      state.addresses
     );
     // Persist address info to WalletState context
     !!addressInfoFromWeb3 &&
@@ -58,7 +62,11 @@ const AddAddressPage: React.FC<AddAddressPageProps> = (props) => {
         />
         {/* TODO: Debounce AddWalletButton */}
         <AddWalletButton
-          onClick={() => handleAttemptAddAddress(addressToBeAdded)}
+          onClick={() => {
+            handleAttemptAddAddress(addressToBeAdded).then(() => {
+              history.push(`/${addressToBeAdded}/details`);
+            });
+          }}
         >
           Add
         </AddWalletButton>
