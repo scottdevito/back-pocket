@@ -5,12 +5,13 @@ import "../../App.css";
 import { leftSidebarWidth } from "../../utils/consts";
 import AddAddressPage from "../add-address-page";
 import AddressDetailsPage from "../address-details-page";
-import { Address, AddressesData } from "../../types";
+import { Address } from "../../types";
 import LeftSidebarAccount from "./left-sidebar-account";
 import {
   useWalletState,
   Action,
 } from "../../components/context/useWalletState";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const App: React.FC = (props): React.ReactElement => {
   const { state, dispatch } = useWalletState();
@@ -29,33 +30,53 @@ const App: React.FC = (props): React.ReactElement => {
   };
 
   return (
-    <AppWrapper className="App">
-      <LeftSidebar>
-        <LogoWrapper>
-          <img
-            src={backPocketLogo}
-            alt="Back Pocket Logo"
-            style={{ width: " 46px" }}
-          />
-          <h3 style={{ margin: "0 0 0 15px" }}>Back Pocket</h3>
-        </LogoWrapper>
-        <LeftSidebarContentSection>
-          {state.addresses.map((address: Address) => {
-            return renderLeftSidebarAddress(address, dispatch);
-          })}
-        </LeftSidebarContentSection>
-      </LeftSidebar>
-      <RightSection>
-        <Header routeParam={""} />
-        <RightContentSection>
-          {state.addresses?.length > 0 ? (
-            <AddressDetailsPage />
-          ) : (
-            <AddAddressPage />
-          )}
-        </RightContentSection>
-      </RightSection>
-    </AppWrapper>
+    <Router>
+      <AppWrapper className="App">
+        <LeftSidebar>
+          <Link to={"/"}>
+            <LogoWrapper>
+              <img
+                src={backPocketLogo}
+                alt="Back Pocket Logo"
+                style={{ width: " 46px" }}
+              />
+              <h3
+                style={{
+                  margin: "0 0 0 15px",
+                  textDecoration: "none",
+                  color: "#000",
+                }}
+              >
+                Back Pocket
+              </h3>
+            </LogoWrapper>
+          </Link>
+          <LeftSidebarContentSection>
+            {state.addresses.map((address: Address) => {
+              return renderLeftSidebarAddress(address, dispatch);
+            })}
+          </LeftSidebarContentSection>
+        </LeftSidebar>
+        <RightSection>
+          <Header routeParam={""} />
+          <RightContentSection>
+            <Switch>
+              <Route exact path="/">
+                <AddAddressPage />
+              </Route>
+
+              <Route path="/:addressIdFromUrl/details">
+                {state.addresses?.length > 0 ? (
+                  <AddressDetailsPage />
+                ) : (
+                  <AddressDetailsPage />
+                )}
+              </Route>
+            </Switch>
+          </RightContentSection>
+        </RightSection>
+      </AppWrapper>
+    </Router>
   );
 };
 
