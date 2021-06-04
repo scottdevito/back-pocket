@@ -33,7 +33,7 @@ const App: React.FC = (props): React.ReactElement => {
     <Router>
       <AppWrapper className="App">
         <LeftSidebar>
-          <Link to={"/"}>
+          <Link to={"/"} style={{ textDecoration: "none", color: "#000" }}>
             <LogoWrapper>
               <img
                 src={backPocketLogo}
@@ -43,7 +43,6 @@ const App: React.FC = (props): React.ReactElement => {
               <h3
                 style={{
                   margin: "0 0 0 15px",
-                  textDecoration: "none",
                   color: "#000",
                 }}
               >
@@ -56,6 +55,11 @@ const App: React.FC = (props): React.ReactElement => {
               return renderLeftSidebarAddress(address, dispatch);
             })}
           </LeftSidebarContentSection>
+          <Link to={"/"} style={{ position: "absolute", bottom: "30px" }}>
+            <AddAnotherAddressButton>
+              Add another address
+            </AddAnotherAddressButton>
+          </Link>
         </LeftSidebar>
         <RightSection>
           <Header routeParam={""} />
@@ -172,4 +176,20 @@ const RightContentSection = styled.section`
   align-items: center;
   height: 100%;
   width: ${`calc(100vw - ${leftSidebarWidth})`};
+`;
+
+const AddAnotherAddressButton = styled.button`
+  background-color: #f2f2f2;
+  color: #636363;
+  border-radius: 5px;
+  padding: 10px 30px;
+  border: 0;
+  font-size: 14px;
+  font-weight: 700;
+  max-width: 260px;
+  height: 40px;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
