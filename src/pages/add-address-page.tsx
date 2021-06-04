@@ -24,7 +24,7 @@ const AddAddressPage: React.FC<AddAddressPageProps> = (props) => {
   };
 
   // Validate address and attempt to add it
-  const { attemptAddAddress } = React.useContext(Web3Context);
+  const { attemptAddAddress, web3 } = React.useContext(Web3Context);
 
   const handleAttemptAddAddress = async (addressToBeAdded: Address["id"]) => {
     const addressInfoFromWeb3 = await attemptAddAddress(
@@ -64,7 +64,9 @@ const AddAddressPage: React.FC<AddAddressPageProps> = (props) => {
         <AddWalletButton
           onClick={() => {
             handleAttemptAddAddress(addressToBeAdded).then(() => {
-              history.push(`/${addressToBeAdded}/details`);
+              if (web3.utils.isAddress(addressToBeAdded)) {
+                history.push(`/${addressToBeAdded}/details`);
+              }
             });
           }}
         >
