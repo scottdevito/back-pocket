@@ -4,23 +4,39 @@ import { Address } from "../../types";
 import leftSidebarAccount from "../../assets/images/leftSidebarAccount.svg";
 import removeAccountIcon from "../../assets/icons/removeAccountIcon.svg";
 import { Action } from "../../components/context/useWalletState";
+import { useHistory, matchPath, useLocation } from "react-router-dom";
 export interface LeftSidebarAccountProps {
   addressData: Address;
   dispatch: React.Dispatch<Action>;
 }
 
 const LeftSidebarAccount: React.FC<LeftSidebarAccountProps> = (props) => {
+  const { pathname } = useLocation();
+
+  const match = matchPath(pathname, {
+    path: "/:addressIdFromUrl/details",
+    exact: true,
+    strict: false,
+  });
+
+  let history = useHistory();
+
   return (
     <LeftSidebarAccountWrapper>
       <AccountContentWrapper>
         <RemoveAccountIcon
           src={removeAccountIcon}
-          onClick={() =>
+          onClick={() => {
             props.dispatch({
               type: "remove_address",
               payload: { address: props.addressData },
-            })
-          }
+            });
+
+            // If the user removed the address that is currently being viewed, re-route them to the add address page
+            if (!!match?.isExact) {
+              history.push(`/`);
+            }
+          }}
         />
         <AccountAddressHeader>{props.addressData.name}</AccountAddressHeader>
       </AccountContentWrapper>
